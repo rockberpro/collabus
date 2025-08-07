@@ -28,6 +28,9 @@ const LaraMountainMeadow = definePreset(Lara, {
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
+  devServer: {
+    host: '0',
+  },
 
   modules: [
     '@nuxt/eslint',
@@ -41,7 +44,20 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
   ],
 
-  ssr: true,
+  ssr: false,
+
+  primevue: {
+    options: {
+      theme: {
+        preset: LaraMountainMeadow,
+        options: {
+          prefix: 'p',
+          darkModeSelector: '.dark-mode',
+          cssLayer: false
+        }
+      }
+    }
+  },
 
   pwa: {
     registerType: 'autoUpdate',
@@ -96,16 +112,18 @@ export default defineNuxtConfig({
     },
   },
 
-  primevue: {
-    options: {
-      theme: {
-        preset: LaraMountainMeadow,
-        options: {
-          prefix: 'p',
-          darkModeSelector: '.dark-mode',
-          cssLayer: false
-        }
-      }
-    }
-  }
+  vite: {
+    // Better support for Tauri CLI output
+    clearScreen: false,
+    // Enable environment variables
+    // Additional environment variables can be found at
+    // https://v2.tauri.app/reference/environment-variables/
+    envPrefix: ['VITE_', 'TAURI_'],
+    server: {
+      // Tauri requires a consistent port
+      strictPort: true,
+    },
+  },
+  // Avoids error [unhandledRejection] EMFILE: too many open files, watch
+  ignore: ['**/src-tauri/**'],
 })
